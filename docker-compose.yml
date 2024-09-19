@@ -1,0 +1,45 @@
+version: '3'
+
+name: trabajo-docker
+
+services:
+  web:
+    image: lucas999111/trabajo-docker:1.0.1
+    container_name: todo-list-app
+    restart: always
+    ports:
+      - "3000:3000"
+    networks:
+      - todo-net
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_DATABASE=todolist
+      - DB_USER=todouser
+      - DB_PASSWORD=userpassword
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./db_data:/var/lib/mysql
+    networks:
+      - todo-net
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=todolist
+      - MYSQL_USER=todouser
+      - MYSQL_PASSWORD=userpassword
+
+networks:
+  todo-net:
+    driver: bridge
+
+volumes:
+  db_data:
